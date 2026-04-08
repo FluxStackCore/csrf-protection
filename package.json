@@ -1,0 +1,71 @@
+{
+  "name": "@fluxstack/plugin-csrf-protection",
+  "version": "1.0.0",
+  "description": "CSRF protection using the Double-Submit Cookie pattern",
+  "type": "module",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": {
+      "bun": "./index.ts",
+      "types": "./index.ts",
+      "default": "./index.ts"
+    },
+    "./client": {
+      "bun": "./client/init.ts",
+      "types": "./client/init.ts",
+      "default": "./client/init.ts"
+    },
+    "./server": {
+      "bun": "./server/CsrfService.ts",
+      "types": "./server/CsrfService.ts",
+      "default": "./server/CsrfService.ts"
+    },
+    "./config": {
+      "bun": "./config/index.ts",
+      "types": "./config/index.ts",
+      "default": "./config/index.ts"
+    }
+  },
+  "files": ["dist", "*.ts", "client", "server", "config"],
+  "scripts": {
+    "build": "tsup",
+    "prepublishOnly": "bun run build"
+  },
+  "keywords": [
+    "fluxstack",
+    "plugin",
+    "csrf",
+    "security",
+    "middleware",
+    "typescript"
+  ],
+  "author": "FluxStack Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "@fluxstack/sdk": ">=1.0.0",
+    "elysia": ">=1.0.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "fluxstack": {
+    "plugin": true,
+    "version": "^1.0.0",
+    "hooks": [
+      "setup",
+      "onRequestValidation"
+    ],
+    "category": "security",
+    "tags": [
+      "csrf",
+      "security",
+      "middleware"
+    ],
+    "client": "./client/init.ts"
+  }
+}
