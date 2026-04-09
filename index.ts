@@ -57,6 +57,43 @@ export const csrfProtectionPlugin: Plugin = {
       details: `cookie=${COOKIE_NAME} header=${HEADER_NAME}`,
     })
 
+    // Register client-side hook to auto-inject CSRF token on every Eden request
+    if (context.clientHooks) {
+      context.clientHooks.register('onEdenInit', `
+        // CSRF Protection: auto-inject token header on state-changing requests
+        (async function() {
+          var COOKIE_NAME = '${COOKIE_NAME}';
+          var HEADER_NAME = '${HEADER_NAME}';
+
+          function getCsrfToken() {
+            var match = document.cookie.split('; ').find(function(c) { return c.startsWith(COOKIE_NAME + '='); });
+            return match ? match.slice(COOKIE_NAME.length + 1) : null;
+          }
+
+          // Ensure we have a CSRF cookie
+          if (!getCsrfToken()) {
+            try { await fetch('/api/__csrf', { credentials: 'include' }); } catch(e) {}
+          }
+
+          // Patch global fetch to auto-add CSRF header on POST/PUT/DELETE
+          var originalFetch = window.fetch;
+          window.fetch = function(input, init) {
+            var method = (init && init.method || 'GET').toUpperCase();
+            if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS') {
+              var token = getCsrfToken();
+              if (token) {
+                init = init || {};
+                init.headers = new Headers(init.headers || {});
+                init.headers.set(HEADER_NAME, token);
+              }
+            }
+            return originalFetch.call(this, input, init);
+          };
+        })();
+      `)
+      context.logger.info('CSRF client hook registered — fetch will auto-inject token')
+    }
+
   },
 
   // Elysia sub-app: GET /api/__csrf to issue a CSRF token
