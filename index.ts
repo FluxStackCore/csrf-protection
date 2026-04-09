@@ -58,8 +58,9 @@ export const csrfProtectionPlugin: Plugin = {
     })
 
     // Register client-side hook to auto-inject CSRF token on every Eden request
-    if (context.clientHooks) {
-      context.clientHooks.register('onEdenInit', `
+    const clientHooks = (context as any).clientHooks as { register(hook: string, code: string): void } | undefined
+    if (clientHooks) {
+      clientHooks.register('onEdenInit', `
         // CSRF Protection: auto-inject token header on state-changing requests
         (async function() {
           var COOKIE_NAME = '${COOKIE_NAME}';
