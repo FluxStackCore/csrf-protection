@@ -3,7 +3,7 @@
  * Double-Submit Cookie pattern — stateless, no server-side storage needed.
  */
 
-import type { Plugin, PluginContext, ValidationContext } from '@fluxstack/sdk'
+import type { Plugin, PluginContext, ValidationContext } from '@fluxstack/plugin-kit'
 
 import { Elysia, t } from 'elysia'
 import { CsrfService } from './server/CsrfService'

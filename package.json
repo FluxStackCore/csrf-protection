@@ -43,7 +43,8 @@
   "author": "FluxStack Team",
   "license": "MIT",
   "peerDependencies": {
-    "@fluxstack/sdk": ">=1.0.0",
+    "@fluxstack/plugin-kit": ">=0.2.0",
+    "@fluxstack/config": ">=1.0.0",
     "elysia": ">=1.0.0"
   },
   "devDependencies": {

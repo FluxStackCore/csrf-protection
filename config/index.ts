@@ -1,9 +1,9 @@
 /**
  * CSRF Protection Plugin Configuration
- * Uses @fluxstack/plugin-sdk declarative config system
+ * Uses @fluxstack/config declarative config system
  */
 
-import { defineConfig, config } from '@fluxstack/sdk/config'
+import { defineConfig, config } from '@fluxstack/config'
 
 // Auto-detect production environment for secure cookie default
 const isProduction = typeof process !== 'undefined'
