@@ -66,12 +66,18 @@ export const csrfProtectionPlugin: Plugin = {
           var COOKIE_NAME = '${COOKIE_NAME}';
           var HEADER_NAME = '${HEADER_NAME}';
 
+          function getMetaToken() {
+            var m = document.querySelector('meta[name="csrf-token"]');
+            return m ? m.getAttribute('content') : null;
+          }
           function getCsrfToken() {
             var match = document.cookie.split('; ').find(function(c) { return c.startsWith(COOKIE_NAME + '='); });
-            return match ? match.slice(COOKIE_NAME.length + 1) : null;
+            if (match) return match.slice(COOKIE_NAME.length + 1);
+            // Fallback: token injetado pelo SSR no <meta> (zero round-trip).
+            return getMetaToken();
           }
 
-          // Ensure we have a CSRF cookie
+          // Só busca um token se não houver nem no cookie nem no <meta> do SSR.
           if (!getCsrfToken()) {
             try { await fetch('/api/__csrf', { credentials: 'include' }); } catch(e) {}
           }
